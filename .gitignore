@@ -1,0 +1,9 @@
+# Locally generated model artifacts
+model.pkl
+vectorizer.pkl
+
+# Local environment and temporary files
+.env
+converted_audio.wav
+temp_audio_input*
+__pycache__/
