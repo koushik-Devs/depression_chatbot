@@ -25,12 +25,13 @@ data = data.dropna(subset=['statement'])
 X = data['statement']
 y = data['status']
 
-# Vectorize the text using TF-IDF
+# Split before fitting the vectorizer to avoid leaking test-set vocabulary.
+X_train_text, X_test_text, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42, stratify=y
+)
 vectorizer = TfidfVectorizer(max_features=5000, ngram_range=(1, 2))
-X_vectorized = vectorizer.fit_transform(X)
-
-# Split into training and testing sets
-X_train, X_test, y_train, y_test = train_test_split(X_vectorized, y, test_size=0.2, random_state=42, stratify=y)
+X_train = vectorizer.fit_transform(X_train_text)
+X_test = vectorizer.transform(X_test_text)
 
 # Train Logistic Regression model
 lr_model = LogisticRegression(max_iter=1000, random_state=42, class_weight='balanced')
