@@ -1,3 +1,5 @@
+from pathlib import Path
+
 import pandas as pd
 import numpy as np
 import pickle
@@ -7,8 +9,8 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score
 
 # Load and preprocess the dataset
-file_path = "C:/Users/kalya/OneDrive/Desktop/Depression Chatbot/Depression Chatbot/Combined Data.csv"
-data = pd.read_csv(file_path)
+BASE_DIR = Path(__file__).resolve().parent
+data = pd.read_csv(BASE_DIR / "Combined Data.csv")
 
 # Drop unnecessary columns (if present)
 data = data.drop(columns=['Unnamed: 0'], errors='ignore')
@@ -23,12 +25,13 @@ data = data.dropna(subset=['statement'])
 X = data['statement']
 y = data['status']
 
-# Vectorize the text using TF-IDF
+# Split before fitting the vectorizer to avoid leaking test-set vocabulary.
+X_train_text, X_test_text, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42, stratify=y
+)
 vectorizer = TfidfVectorizer(max_features=5000, ngram_range=(1, 2))
-X_vectorized = vectorizer.fit_transform(X)
-
-# Split into training and testing sets
-X_train, X_test, y_train, y_test = train_test_split(X_vectorized, y, test_size=0.2, random_state=42, stratify=y)
+X_train = vectorizer.fit_transform(X_train_text)
+X_test = vectorizer.transform(X_test_text)
 
 # Train Logistic Regression model
 lr_model = LogisticRegression(max_iter=1000, random_state=42, class_weight='balanced')
@@ -42,10 +45,10 @@ accuracy = accuracy_score(y_test, y_pred)
 print(f"Logistic Regression Model Accuracy: {accuracy * 100:.2f}%")
 
 # Save the trained model and vectorizer
-with open("model.pkl", "wb") as model_file:
+with open(BASE_DIR / "model.pkl", "wb") as model_file:
     pickle.dump(lr_model, model_file)
 
-with open("vectorizer.pkl", "wb") as vectorizer_file:
+with open(BASE_DIR / "vectorizer.pkl", "wb") as vectorizer_file:
     pickle.dump(vectorizer, vectorizer_file)
 
 print("Model and vectorizer saved successfully.")

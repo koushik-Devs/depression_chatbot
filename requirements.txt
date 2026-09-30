@@ -1,0 +1,9 @@
+Flask
+Groq
+numpy
+pandas
+scikit-learn
+SpeechRecognition
+pydub
+textblob
+python-dotenv
