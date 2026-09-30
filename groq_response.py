@@ -1,5 +1,8 @@
 import os
 from groq import Groq
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # Configure this value in the environment; never commit API credentials.
 GROQ_API_KEY = os.environ.get("GROQ_API_KEY", "").strip()
