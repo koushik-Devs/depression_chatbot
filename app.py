@@ -11,6 +11,7 @@ from textblob import TextBlob
 from groq_response import groq_response
 
 app = Flask(__name__)
+app.config["MAX_CONTENT_LENGTH"] = 10 * 1024 * 1024
 
 # Run `python Training.py` once to create these trusted local artifacts.
 BASE_DIR = Path(__file__).resolve().parent
