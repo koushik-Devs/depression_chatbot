@@ -1,3 +1,5 @@
+from pathlib import Path
+
 import pandas as pd
 import numpy as np
 import pickle
@@ -7,8 +9,8 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score
 
 # Load and preprocess the dataset
-file_path = "C:/Users/kalya/OneDrive/Desktop/Depression Chatbot/Depression Chatbot/Combined Data.csv"
-data = pd.read_csv(file_path)
+BASE_DIR = Path(__file__).resolve().parent
+data = pd.read_csv(BASE_DIR / "Combined Data.csv")
 
 # Drop unnecessary columns (if present)
 data = data.drop(columns=['Unnamed: 0'], errors='ignore')
@@ -42,10 +44,10 @@ accuracy = accuracy_score(y_test, y_pred)
 print(f"Logistic Regression Model Accuracy: {accuracy * 100:.2f}%")
 
 # Save the trained model and vectorizer
-with open("model.pkl", "wb") as model_file:
+with open(BASE_DIR / "model.pkl", "wb") as model_file:
     pickle.dump(lr_model, model_file)
 
-with open("vectorizer.pkl", "wb") as vectorizer_file:
+with open(BASE_DIR / "vectorizer.pkl", "wb") as vectorizer_file:
     pickle.dump(vectorizer, vectorizer_file)
 
 print("Model and vectorizer saved successfully.")
